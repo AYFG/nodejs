@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/images/favicon.svg" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>정보 공유 - 멋사컴</title>
 
@@ -21,18 +20,24 @@
     <meta property="og:site_name" content="멋사컴" />
 
     <script src="https://cdn.tailwindcss.com"></script>
-
   </head>
   <body>
     <div id="root">
+      <!-- 전체 화면 로딩중
+      <div class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-10">
+        <div class="flex flex-col items-center">
+          <h3 class="mb-4 text-lg font-semibold">잠시만 기다려주세요.</h3>
+          <RingLoader color="#F97316" />
+        </div>
+      </div>
+      -->
 
       <div class="flex flex-col min-h-screen dark:bg-gray-700 dark:text-gray-200 transition-color duration-500 ease-in-out">
-
         <header class="px-8 min-w-80 bg-slate-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200 transition-color duration-500 ease-in-out">
           <nav class="flex flex-wrap justify-center items-center p-4 md:flex-nowrap md:justify-between">
             <div class="w-1/2 order-1 md:w-auto">
               <a href="/" class="flex items-center gap-2">
-                <img class="mr-3 h-6 sm:h-9" src="/images/favicon.svg" alt="로고 이미지" />
+                <img class="mr-3 h-6 sm:h-9" src="/images/favicon.svg" width="40" height="40" alt="로고 이미지" />
                 <span class="text-lg font-bold">멋사컴</span>
               </a>
             </div>
@@ -45,73 +50,35 @@
             </div>
 
             <div class="w-1/2 order-1 flex justify-end items-center md:order-2 md:w-auto">
-
-              <!-- 로그인 후 -->
-              <!--
-              <p class="flex items-center">
-                <img class="w-8 rounded-full mr-2" src="https://api.fesp.shop/files/00-sample/user-muzi.webp" />
-                용쌤님 :)
-                <button type="button" class="bg-gray-900 py-1 px-2 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded" onclick="location.href='/'">로그아웃</button>
-              </p>
-              -->
-
-              <!-- 로그인 전 -->
               <div class="flex justify-end">
-                <button type="button" class="bg-orange-500 py-1 px-2 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded" onclick="location.href='/user/login'">로그인</button>
-                <button type="button" class="bg-gray-900 py-1 px-2 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded" onclick="location.href='/user/signup'">회원가입</button>
+                <a href="/user/login" class="bg-orange-500 py-1 px-2 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded">로그인</a>
+                <a href="/user/signup" class="bg-gray-900 py-1 px-2 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded">회원가입</a>
               </div>
 
-              <!-- 라이트/다크 모드 전환 -->
-              <button
-                type="button"
-                data-toggle-dark="dark"
-                class="ml-4 flex items-center w-8 h-8 justify-center text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg toggle-dark-state-example hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 dark:bg-gray-800 focus:outline-none dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              >
-                <svg
-                  data-toggle-icon="moon"
-                  class="w-3.5 h-3.5 hidden"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 18 20"
-                >
+              <button type="button" data-toggle-dark="dark" class="ml-4 flex items-center w-8 h-8 justify-center text-xs font-medium text-gray-700 bg-white border border-gray-200 rounded-lg toggle-dark-state-example hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-gray-300 dark:focus:ring-gray-500 dark:bg-gray-800 focus:outline-none dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                <svg data-toggle-icon="moon" class="w-3.5 h-3.5 hidden" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
                   <path d="M17.8 13.75a1 1 0 0 0-.859-.5A7.488 7.488 0 0 1 10.52 2a1 1 0 0 0 0-.969A1.035 1.035 0 0 0 9.687.5h-.113a9.5 9.5 0 1 0 8.222 14.247 1 1 0 0 0 .004-.997Z"></path>
                 </svg>
-                <svg
-                  data-toggle-icon="sun"
-                  class="w-3.5 h-3.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
+                <svg data-toggle-icon="sun" class="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M10 15a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-11a1 1 0 0 0 1-1V1a1 1 0 0 0-2 0v2a1 1 0 0 0 1 1Zm0 12a1 1 0 0 0-1 1v2a1 1 0 1 0 2 0v-2a1 1 0 0 0-1-1ZM4.343 5.757a1 1 0 0 0 1.414-1.414L4.343 2.929a1 1 0 0 0-1.414 1.414l1.414 1.414Zm11.314 8.486a1 1 0 0 0-1.414 1.414l1.414 1.414a1 1 0 0 0 1.414-1.414l-1.414-1.414ZM4 10a1 1 0 0 0-1-1H1a1 1 0 0 0 0 2h2a1 1 0 0 0 1-1Zm15-1h-2a1 1 0 1 0 0 2h2a1 1 0 0 0 0-2ZM4.343 14.243l-1.414 1.414a1 1 0 1 0 1.414 1.414l1.414-1.414a1 1 0 0 0-1.414-1.414ZM14.95 6.05a1 1 0 0 0 .707-.293l1.414-1.414a1 1 0 1 0-1.414-1.414l-1.414 1.414a1 1 0 0 0 .707 1.707Z"></path>
                 </svg>
                 <span class="sr-only">Toggle dark/light mode</span>
               </button>
-
             </div>
           </nav>
         </header>
 
-        <!-- 페이지 본문 -->
         <main class="min-w-80 p-10">
           <div class="text-center py-4">
             <h2 class="pb-4 text-2xl font-bold text-gray-700 dark:text-gray-200">정보 공유</h2>
           </div>
           <div class="flex justify-end mr-4">
-            
-            <!-- 검색 -->
-            <form onsubmit="location.href=''">
-              <input
-                class="dark:bg-gray-600 bg-gray-100 p-1 rounded"
-                type="text"
-                name="keyword"
-              />
+            <form action="#">
+              <input class="dark:bg-gray-600 bg-gray-100 p-1 rounded" type="text" name="keyword" />
               <button type="submit" class="bg-orange-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded">검색</button>
             </form>
 
-            <button type="button" class="bg-orange-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded" onclick="location.href='/info/new'">글작성</button>
+            <a href="/info/new" class="bg-orange-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded">글작성</a>
           </div>
           <section class="pt-10">
             <table class="border-collapse w-full table-fixed">
@@ -134,39 +101,23 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- 로딩 상태 표시 -->
-                <!--
-                  <tr>
-                    <td colSpan="6" class="py-20 text-center">로딩중...</td>
-                  </tr>
-                -->
-
-                <!-- 에러 메세지 출력 -->
-                <!--
-                  <tr>
-                    <td colSpan="6" class="py-20 text-center">에러 메세지</td>
-                  </tr>
-                -->
-
-
-                <% list.forEach((item)=>{ %>
-                  <tr class="border-b border-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300 ease-in-out">
-                    <td class="p-2 text-center"><%= item._id %></td>
-                    <td class="p-2 truncate indent-4 cursor-pointer"><a href="/<%= item.type %>/<%= item._id %>"><%= item.title %></a></td>
-                    <td class="p-2 text-center truncate"><%= item.user.name %></td>
-                    <td class="p-2 text-center hidden sm:table-cell"><%= item.views %></td>
-                    <td class="p-2 text-center hidden sm:table-cell"><%= item. repliesCount%></td>
-                    <td class="p-2 truncate text-center hidden sm:table-cell"><%= item.updatedAt %></td>
-                  </tr>
-                <% }); %>
+                <% list.forEach(item => { %>
+                <tr class="border-b border-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-300 ease-in-out">
+                  <td class="p-2 text-center"><%=item._id%></td>
+                  <td class="p-2 truncate indent-4"><a href="/<%=item.type%>/<%=item._id%>" class="cursor-pointer"><%=item.title%></a></td>
+                  <td class="p-2 text-center truncate"><%=item.user?.name%></td>
+                  <td class="p-2 text-center hidden sm:table-cell"><%= item.views %></td>
+                  <td class="p-2 text-center hidden sm:table-cell"><%= item.replies?.length || 0 %></td>
+                  <td class="p-2 truncate text-center hidden sm:table-cell"><%= item.updatedAt %></td>
+                </tr>
+                <%});%>
               </tbody>
             </table>
             <hr />
-    
-            <!-- 페이지네이션 -->
+
             <div>
               <ul class="flex justify-center gap-3 m-4">
-                <li class="text-bold text-blue-700">
+                <li class="font-bold text-blue-700">
                   <a href="/info?page=1">1</a>
                 </li>
                 <li>
@@ -174,13 +125,10 @@
                 </li>
               </ul>
             </div>
-
-
-
           </section>
         </main>
-        
-        <footer class="p-4 pb-12 w-full border-t border-t-slate-200  dark:border-t-slate-500 dark:bg-gray-600 text-gray-600 dark:text-white transition-color duration-500 ease-in-out">
+
+        <footer class="p-4 pb-12 w-full border-t border-t-slate-200 dark:border-t-slate-500 dark:bg-gray-600 text-gray-600 dark:text-white transition-color duration-500 ease-in-out">
           <div class="min-w-[320px] flex flex-wrap gap-4 justify-center items-center text-sm text-slate-400">
             <a href="#" class="hover:font-semibold dark:hover:text-gray-200">약관</a>
             <a href="#" class="hover:font-semibold dark:hover:text-gray-200">게시판 정책</a>
@@ -194,9 +142,9 @@
             <a href="#" class="hover:font-semibold dark:hover:text-gray-200">고객센터</a>
           </div>
         </footer>
-
       </div>
-
     </div>
   </body>
 </html>
+message.txt
+10KB
