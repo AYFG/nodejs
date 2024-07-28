@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "네이버 백과사전",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

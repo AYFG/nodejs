@@ -1,0 +1,20 @@
+meta {
+  name: 검색 결과 조회
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://openapi.naver.com/v1/search/encyc.xml?query=String
+  body: none
+  auth: none
+}
+
+params:query {
+  query: String
+}
+
+headers {
+  X-Naver-Client-Id: https://developers.naver.com/apps/#/myapps/bsewpWSvuCYCZPBigQq5/overview
+  X-Naver-Client-Secret: 
+}
