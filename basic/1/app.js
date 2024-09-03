@@ -1,7 +1,9 @@
 const http = require("http");
+const fs = require("fs");
 
 const server = http.createServer((req, res) => {
   const url = req.url;
+  const method = req.method;
   if (url === "/") {
     res.write("<html>");
     res.write("<head> <title> my First Page </title></head>");
@@ -11,11 +13,12 @@ const server = http.createServer((req, res) => {
     res.write("</html>");
     return res.end();
   }
-  // console.log(req.url, req.method, req.headers);
-
-  // localhost:3000의 요청이 없어서 node app.js를 해도 반응이 없지만 브라우저로 접속을 하면 server 함수가 실행되고 process.exit()이 실행되어 프로그램을 종료한다.
-  // process.exit();
-
+  if (url === "/message" && method === "POST") {
+    fs.writeFileSync("message.txt", "DUMMY");
+    res.statusCode = 302;
+    res.setHeader("Location", "/");
+    return res.end();
+  }
   res.setHeader("Content-Type", "text/html");
   res.write("<html>");
   res.write("<head> <title> my First Page </title></head>");
