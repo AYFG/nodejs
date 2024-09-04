@@ -23,11 +23,14 @@ const server = http.createServer((req, res) => {
       const parsedBody = Buffer.concat(body).toString(); // Buffer == 버스정류장
       console.log(parsedBody);
       const message = parsedBody.split("=")[1];
-      fs.writeFileSync("message.txt", message);
+      // fs.writeFileSync("message.txt", message); //동기적으로 파일 생성 전까지 코드 실행을 막는 메서드
+      fs.writeFile("message.txt", message, (err) => {
+        // 비동기식
+        res.statusCode = 302;
+        res.setHeader("Location", "/");
+        return res.end();
+      });
     });
-    res.statusCode = 302;
-    res.setHeader("Location", "/");
-    return res.end();
   }
   res.setHeader("Content-Type", "text/html");
   res.write("<html>");
