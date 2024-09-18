@@ -3,12 +3,15 @@ var app = express();
 require("dotenv").config();
 var client_id = process.env.XNaverClientId;
 var client_secret = process.env.XNaverClientSecret;
+
 app.get("/search", function (req, res) {
   var api_url =
     "https://openapi.naver.com/v1/search/encyc.json?query=" +
     encodeURI(req.query.query) +
     "&display=" + 
-    encodeURI(req.query.display); // JSON 결과
+    encodeURIComponent(req.query.display) +
+    "&start=" + 
+    encodeURIComponent(req.query.start);
 
   var request = require("request");
   var options = {
