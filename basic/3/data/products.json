@@ -1,1 +1,14 @@
-[{"title":"ads"},{"title":"dgs"},{"title":"fjg"},{"title":"sdgsdhn"}]
+[
+  {
+    "title": "test",
+    "imageUrl": "https://themeisle.com/blog/wp-content/uploads/2024/06/Online-Image-Optimizer-Test-Image-JPG-Version.jpeg",
+    "description": "14214",
+    "price": "esttes"
+  },
+  {
+    "title": "ㅁㄴ",
+    "imageUrl": "https://themeisle.com/blog/wp-content/uploads/2024/06/Online-Image-Optimizer-Test-Image-JPG-Version.jpeg",
+    "description": "123",
+    "price": "124"
+  }
+]
