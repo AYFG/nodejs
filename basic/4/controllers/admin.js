@@ -13,7 +13,7 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const userId = req.user.id;
+  const userId = req.user.createProduct();
   // sequelize 사용 전
   // const product = new Product(null, title, imageUrl, price, description);
   // product
