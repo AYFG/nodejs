@@ -31,6 +31,7 @@ exports.postAddProduct = (req, res, next) => {
     .then((result) => {
       // console.log(result);
       console.log("상품 생성 성공~");
+      res.redirect("/admin/products");
     })
     .catch((err) => {
       console.error(err);
@@ -95,6 +96,15 @@ exports.getProducts = (req, res, next) => {
 
 exports.deleteProducts = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId);
-  res.redirect("/admin/products");
+  Product.findByPk(prodId)
+    .then((product) => {
+      return product.destroy();
+    })
+    .then((result) => {
+      console.log("상품 삭제 성공");
+      res.redirect("/admin/products");
+    })
+    .catch((res) => {
+      console.error(err);
+    });
 };
