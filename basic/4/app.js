@@ -9,6 +9,8 @@ const errorController = require("./controllers/error");
 const sequelize = require("./util/database");
 const Product = require("./models/products");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 const app = express();
 
@@ -40,6 +42,10 @@ app.use(errorController.get404);
 // 관계 설정
 Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 // db 테이블 생성 (이미 있는 테이블은 다시 생성하지 않음)
 sequelize
@@ -48,16 +54,17 @@ sequelize
   .sync()
   .then((result) => {
     return User.findByPk(1);
-    // app.listen(3000);
   })
   .then((user) => {
     if (!user) {
       return User.create({ email: "test@test.com", name: "woong" });
     }
-    return User;
+    return user;
   })
   .then((user) => {
-    console.log(user);
+    return user.createCart();
+  })
+  .then((cart) => {
     app.listen(3000);
   })
   .catch((err) => {

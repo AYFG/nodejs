@@ -13,23 +13,24 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const userId = req.user.createProduct();
-  // sequelize 사용 전
-  // const product = new Product(null, title, imageUrl, price, description);
-  // product
-  //   .save()
-  //   .then(() => {
-  //     res.redirect("/");
-  //   })
-  //   .catch((err) => console.error(err));
+  const userId = req.user
+    .createProduct({ title: title, price: price, imageUrl: imageUrl, description: description })
+    // sequelize 사용 전
+    // const product = new Product(null, title, imageUrl, price, description);
+    // product
+    //   .save()
+    //   .then(() => {
+    //     res.redirect("/");
+    //   })
+    //   .catch((err) => console.error(err));
 
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-    userId: userId,
-  })
+    // Product.create({
+    //   title: title,
+    //   price: price,
+    //   imageUrl: imageUrl,
+    //   description: description,
+    //   userId: userId,
+    // })
     .then((result) => {
       // console.log(result);
       console.log("상품 생성 성공~");
@@ -46,8 +47,11 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect("/");
   }
   const prodId = req.params.productId;
-  Product.findByPk(prodId)
-    .then((product) => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    // Product.findByPk(prodId)
+    .then((products) => {
+      const product = products[0];
       if (!product) {
         return res.redirect("/");
       }
@@ -83,7 +87,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  // Product.findAll()
+  req.user
+    .getProducts()
     .then((products) => {
       res.render("admin/products", {
         prods: products,
