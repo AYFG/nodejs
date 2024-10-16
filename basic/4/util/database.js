@@ -1,21 +1,18 @@
 require("dotenv").config();
+const mongodb = require("mongodb");
+const mongoClient = mongodb.MongoClient;
 const password = process.env.DATABASE_PASSWORD;
 
-// Sequelize 적용 전
-// const mysql = require("mysql2");
-// const pool = mysql.createPool({
-//   host: "localhost",
-//   user: "root",
-//   database: "node-complete",
-//   password: password,
-// });
-// module.exports = pool.promise();
+const mongoConnect = (callback) => {
+  mongoClient
+    .connect(
+      `mongodb+srv://sek82468246:${password}@cluster0.xupmv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
+    )
+    .then((client) => {
+      console.log("몽골디비 연결 성공~");
+      callback(client);
+    })
+    .catch((err) => console.error(err));
+};
 
-const Sequelize = require("sequelize");
-// db이름, user명, 비밀번호, 옵션
-const sequelize = new Sequelize("node-complete", "root", password, {
-  dialect: "mysql",
-  host: "localhost",
-});
-
-module.exports = sequelize;
+module.exports = mongoConnect;
