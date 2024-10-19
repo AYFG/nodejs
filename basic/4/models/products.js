@@ -1,5 +1,3 @@
-const { DOUBLE } = require("sequelize");
-
 const getDb = require("../util/database").getDb;
 
 class Product {
@@ -11,9 +9,9 @@ class Product {
   }
 
   save() {
-    const db = getDb;
-    // db.collection("products").insertOne({ name: "A Book", price: 12.99 });
-    db.collection("products")
+    const db = getDb();
+    return db
+      .collection("products")
       .insertOne(this)
       .then((result) => {
         console.log(result);
