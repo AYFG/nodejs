@@ -1,3 +1,5 @@
+const mongodb = require("mongodb");
+const { ObjectId } = mongodb;
 const getDb = require("../util/database").getDb;
 
 class Product {
@@ -34,6 +36,25 @@ class Product {
       .catch((err) => {
         console.error(err);
       });
+  }
+
+  static findById(prodId) {
+    const db = getDb();
+
+    return (
+      db
+        .collection("products")
+        // .find({ _id: new mongodb.ObjectId(prodId) })
+        .find({ _id: ObjectId.createFromHexString(prodId) })
+        .next()
+        .then((product) => {
+          console.log(product);
+          return product;
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+    );
   }
 }
 
