@@ -8,7 +8,7 @@ class Product {
     this.price = price;
     this.imageUrl = imageUrl;
     this.description = description;
-    this._id = ObjectId.createFromHexString(id);
+    this._id = id ? ObjectId.createFromHexString(id) : null;
   }
 
   save() {
@@ -61,6 +61,17 @@ class Product {
           console.error(err);
         })
     );
+  }
+
+  static deleteById(prodId) {
+    const db = getDb();
+    return db
+      .collection("products")
+      .deleteOne({ _id: ObjectId.createFromHexString(prodId) })
+      .then((result) => {
+        console.log("제품 삭제 성공");
+      })
+      .catch((err) => console.error(err));
   }
 }
 

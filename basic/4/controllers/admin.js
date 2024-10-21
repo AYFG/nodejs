@@ -88,17 +88,14 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-// exports.deleteProducts = (req, res, next) => {
-//   const prodId = req.body.productId;
-//   Product.findByPk(prodId)
-//     .then((product) => {
-//       return product.destroy();
-//     })
-//     .then((result) => {
-//       console.log("상품 삭제 성공");
-//       res.redirect("/admin/products");
-//     })
-//     .catch((res) => {
-//       console.error(err);
-//     });
-// };
+exports.deleteProducts = (req, res, next) => {
+  const prodId = req.body.productId;
+  Product.deleteById(prodId)
+    .then((result) => {
+      console.log("상품 삭제 성공");
+      res.redirect("/admin/products");
+    })
+    .catch((res) => {
+      console.error(err);
+    });
+};
