@@ -2,9 +2,13 @@ const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
+require("dotenv").config();
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
 
 const errorController = require("./controllers/error");
-const mongoConnect = require("./util/database").mongoConnect;
+
 const User = require("./models/user");
 const app = express();
 
@@ -33,6 +37,13 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoConnect(() => {
-  if (User) app.listen(3000);
-});
+mongoose
+  .connect(
+    `mongodb+srv://sek82468246:${DATABASE_PASSWORD}@cluster0.xupmv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
+  )
+  .then((result) => {
+    app.listen(3000);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
