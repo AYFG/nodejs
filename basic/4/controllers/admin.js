@@ -94,7 +94,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.deleteProducts = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteById(prodId)
+  Product.findByIdAndDelete(prodId)
     .then((result) => {
       console.log("상품 삭제 성공");
       res.redirect("/admin/products");
