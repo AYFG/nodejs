@@ -1,8 +1,9 @@
 const Product = require("../models/product");
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find() // mongoose 자체 메서드
     .then((products) => {
+      console.log(products);
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
@@ -24,7 +25,7 @@ exports.getProduct = (req, res, next) => {
   //   });
   // });
 
-  Product.findById(prodId)
+  Product.findById(prodId) // mongoose 자체 메서드 findById
     .then((product) => {
       res.render("shop/product-detail", {
         product: product,
@@ -38,7 +39,7 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res) => {
-  Product.fetchAll()
+  Product.find() // mongoose 자체 메서드 find
     .then((products) => {
       res.render("shop/index", {
         prods: products,
