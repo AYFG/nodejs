@@ -15,11 +15,16 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title, price, imageUrl, description, null, req.user._id);
+  const product = new Product({
+    title: title,
+    price: price,
+    description: description,
+    imageUrl: imageUrl,
+  });
   product
     .save()
     .then((result) => {
-      // console.log(result);
+      console.log(result);
       console.log("상품 생성 성공~");
       res.redirect("/admin/products");
     })
