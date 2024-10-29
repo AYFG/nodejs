@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, next) => {
   User.findById("671fab68947d61fe7a08b4bd")
     .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       next();
     })
     .catch((err) => {
@@ -52,8 +52,8 @@ mongoose
           },
         });
       }
+      user.save();
     });
-    user.save();
     app.listen(3000);
   })
   .catch((err) => {
