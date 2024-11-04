@@ -3,6 +3,7 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const session = require("express-session");
 
 require("dotenv").config();
 const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
@@ -21,6 +22,7 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(session({ secret: "my secret", resave: false, saveUninitialized: false }));
 
 app.use((req, res, next) => {
   User.findById("671fab68947d61fe7a08b4bd")
