@@ -1,5 +1,5 @@
 const express = require("express");
-const { check } = require("express-validator");
+const { check, body } = require("express-validator");
 
 const authController = require("../controllers/auth");
 
@@ -11,7 +11,22 @@ router.get("/reset", authController.getReset);
 router.get("/reset/:token", authController.getNewPassword);
 
 router.post("/login", authController.postLogin);
-router.post("/signup", check("email").isEmail(), authController.postSignup);
+router.post(
+  "/signup",
+  [
+    check("email")
+      .isEmail()
+      .withMessage("유효한 이메일을 입력하세요")
+      .custom((value, { req }) => {
+        if (value === "tese@test.com") {
+          throw new Error("This email address if forbidden");
+        }
+        return true;
+      }),
+    body("password", "5글자 이상 입력해주세요").isLength({ min: 5 }).isAlphanumeric(),
+  ],
+  authController.postSignup,
+);
 router.post("/logout", authController.postLogout);
 router.post("/reset", authController.postReset);
 router.post("/new-password", authController.postNewPassword);
