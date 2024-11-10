@@ -24,6 +24,12 @@ router.post(
         return true;
       }),
     body("password", "5글자 이상 입력해주세요").isLength({ min: 5 }).isAlphanumeric(),
+    body("confirmPassword").custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("비밀번호가 맞지 않습니다.");
+      }
+      return true;
+    }),
   ],
   authController.postSignup,
 );
