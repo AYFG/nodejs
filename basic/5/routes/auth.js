@@ -11,7 +11,16 @@ router.get("/signup", authController.getSignup);
 router.get("/reset", authController.getReset);
 router.get("/reset/:token", authController.getNewPassword);
 
-router.post("/login", authController.postLogin);
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("유효한 이메일을 입력하세요").normalizeEmail(),
+    body("password").isLength({ min: 5 }).isAlphanumeric().trim(),
+  ],
+
+  authController.postLogin,
+);
+
 router.post(
   "/signup",
   [
@@ -28,14 +37,17 @@ router.post(
             return Promise.reject("이미 사용중인 이메일입니다. 다른 이메일을 사용해주세요.");
           }
         });
+      })
+      .normalizeEmail(),
+    body("password", "5글자 이상 입력해주세요").isLength({ min: 5 }).isAlphanumeric().trim(),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("비밀번호가 맞지 않습니다.");
+        }
+        return true;
       }),
-    body("password", "5글자 이상 입력해주세요").isLength({ min: 5 }).isAlphanumeric(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("비밀번호가 맞지 않습니다.");
-      }
-      return true;
-    }),
   ],
   authController.postSignup,
 );
