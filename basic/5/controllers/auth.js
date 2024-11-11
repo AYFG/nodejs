@@ -81,7 +81,7 @@ exports.postSignup = (req, res, next) => {
   const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
   console.log(errors.array());
-  if (errors.isEmpty()) {
+  if (!errors.isEmpty()) {
     return res.status(422).render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
@@ -89,27 +89,18 @@ exports.postSignup = (req, res, next) => {
     });
   }
 
-  User.findOne({
-    email: email,
-  })
-    .then((userDoc) => {
-      if (userDoc) {
-        req.flash("error", "이미 사용중인 이메일입니다. 다른 이메일을 사용해주세요.");
-        return res.redirect("/signup");
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then((hashedPassword) => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
-          return user.save();
-        })
-        .then((result) => {
-          res.redirect("/login");
-        });
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
+      return user.save();
+    })
+    .then((result) => {
+      res.redirect("/login");
     })
     .catch((err) => console.error(err));
 };
