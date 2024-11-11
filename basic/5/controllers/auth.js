@@ -25,6 +25,8 @@ exports.getLogin = (req, res, next) => {
     path: "/login",
     pageTitle: "Login",
     errorMessage: message,
+    oldInput: { email: "", password: "" },
+    validationErrors: [],
   });
 };
 
@@ -39,7 +41,7 @@ exports.getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: message,
-    oldInput: { email: "", password: "", confirmPassword: "" },
+    oldInput: { email: "", password: "" },
     validationErrors: [],
   });
 };
@@ -47,7 +49,7 @@ exports.getSignup = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
+
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -55,14 +57,22 @@ exports.postLogin = (req, res, next) => {
       path: "/login",
       pageTitle: "Login",
       errorMessage: errors.array()[0].msg,
+      oldInput: { email: email, password: password },
+      validationErrors: [],
     });
   }
 
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        req.flash("error", "잘못된 이메일 또는 비밀번호입니다!");
-        return res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          path: "/login",
+          pageTitle: "Login",
+          errorMessage: "이메일이나 비밀번호가 맞지 않습니다!",
+          oldInput: { email: email, password: password },
+
+          validationErrors: errors.array(),
+        });
       }
       bcrypt
         .compare(password, user.password)
@@ -75,8 +85,13 @@ exports.postLogin = (req, res, next) => {
               res.redirect("/");
             });
           }
-          req.flash("error", "잘못된 이메일 또는 비밀번호입니다!");
-          res.redirect("/login");
+          return res.status(422).render("auth/login", {
+            path: "/login",
+            pageTitle: "Login",
+            errorMessage: "이메일이나 비밀번호가 맞지 않습니다.",
+            oldInput: { email: email, password: password },
+            validationErrors: errors.array(),
+          });
         })
         .catch((err) => {
           console.error(err);
