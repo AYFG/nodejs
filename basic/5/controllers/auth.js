@@ -41,7 +41,7 @@ exports.getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: message,
-    oldInput: { email: "", password: "" },
+    oldInput: { email: "", password: "", confirmPassword: "" },
     validationErrors: [],
   });
 };
@@ -58,7 +58,7 @@ exports.postLogin = (req, res, next) => {
       pageTitle: "Login",
       errorMessage: errors.array()[0].msg,
       oldInput: { email: email, password: password },
-      validationErrors: [],
+      validationErrors: errors.array(),
     });
   }
 
@@ -70,8 +70,7 @@ exports.postLogin = (req, res, next) => {
           pageTitle: "Login",
           errorMessage: "이메일이나 비밀번호가 맞지 않습니다!",
           oldInput: { email: email, password: password },
-
-          validationErrors: errors.array(),
+          validationErrors: [],
         });
       }
       bcrypt
