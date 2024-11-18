@@ -30,7 +30,15 @@ const fileStorage = multer.diskStorage({
     callback(null, "images");
   },
   filename: (req, file, callback) => {
-    callback(null, new Date().toISOString() + "-" + file.originalname);
+    callback(null, Date.now() + file.originalname);
+
+    // TypeError: Cannot read properties of undefined (reading 'isLoggedIn')
+
+    // debug :
+    // Date.prototype.toISOString()은 YYYY-MM-DDTHH:mm:ss.sssZ 또는 ±YYYYYY-MM-DDTHH:mm:ss.sssZ 로 반환하는데 windows 운영체제에서의 파일명은 콜론(:)을 허용하지 않아서 생긴 오류
+    // 개선 전 : callback(null, new Date().toISOString()+ file.originalname);
+
+    // 개선 후 : callback(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
   },
 });
 
