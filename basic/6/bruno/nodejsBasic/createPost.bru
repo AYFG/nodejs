@@ -1,0 +1,18 @@
+meta {
+  name: createPost
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/feed/posts
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "My second Post",
+    "content":"This is the content of my second post"
+  }
+}
