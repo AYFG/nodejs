@@ -10,6 +10,6 @@ exports.createPost = (req, res, next) => {
   // Create post in db
   res.status(201).json({
     message: "Post created successfully",
-    post: { id: new Date().toISOString().replace(/:/g, "-") },
+    post: { id: new Date().toISOString().replace(/:/g, "-"), title: title, content: content },
   });
 };
