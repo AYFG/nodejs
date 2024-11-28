@@ -1,3 +1,5 @@
+const fs = require("fs");
+const path = require("path");
 const { validationResult } = require("express-validator");
 
 const Post = require("../models/post");
@@ -76,4 +78,56 @@ exports.getPost = (req, res, next) => {
       }
       next(err);
     });
+};
+
+exports.updatePost = (req, res, next) => {
+  const postId = req.params.postId;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error("유효성 검사 실패, 입력한 데이터가 올바르지 않습니다");
+    error.statusCode = 422;
+    throw error;
+  }
+  const title = req.body.title;
+  const content = req.body.content;
+  let imageUrl = req.file.path;
+
+  if (req.file) {
+    imageUrl = req.file.path.replace("\\", "/");
+  }
+  if (!imageUrl) {
+    const error = new Error("선택한 사진이 없습니다.");
+    error.statusCode = 422;
+    throw error;
+  }
+
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error("존재하지 않는 게시물 입니다.");
+        error.statusCode = 404;
+        throw error;
+      }
+      if (imageUrl !== post.imageUrl) {
+        clearImage(post.imageUrl);
+      }
+      post.title = title;
+      post.imageUrl = imageUrl;
+      post.content = content;
+      return post.save();
+    })
+    .then((result) => {
+      res.status(200).json({ message: "수정을 완료했습니다.", post: result });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => console.error(err));
 };
