@@ -1,5 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
+require("dotenv").config();
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
+
+const MongoDB_URI = `mongodb+srv://sek82468246:${DATABASE_PASSWORD}@cluster0.xupmv.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0`;
 
 const feedRoutes = require("./routes/feed");
 
@@ -16,4 +22,9 @@ app.use((req, res, next) => {
 
 app.use("/feed", feedRoutes);
 
-app.listen(8080);
+mongoose
+  .connect(MongoDB_URI)
+  .then((result) => {
+    app.listen(8080);
+  })
+  .catch((err) => console.error(err));
