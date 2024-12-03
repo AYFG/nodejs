@@ -169,7 +169,13 @@ exports.deletePost = (req, res, next) => {
       return Post.findByIdAndDelete(postId);
     })
     .then((result) => {
-      console.log(result);
+      return User.findById(req.userId);
+    })
+    .then((user) => {
+      user.posts.pull(postId);
+      user.save();
+    })
+    .then((result) => {
       res.status(200).json({ message: "게시물을 삭제했습니다." });
     })
     .catch((err) => {
