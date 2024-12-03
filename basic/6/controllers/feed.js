@@ -121,9 +121,15 @@ exports.updatePost = (req, res, next) => {
 
   Post.findById(postId)
     .then((post) => {
+      console.log(post);
       if (!post) {
         const error = new Error("존재하지 않는 게시물 입니다.");
         error.statusCode = 404;
+        throw error;
+      }
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error("인증에 실패했습니다.");
+        error.statusCode = 403;
         throw error;
       }
       if (imageUrl !== post.imageUrl) {
@@ -154,7 +160,11 @@ exports.deletePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      // 로그인 한 유저와 게시물 생성자가 같은지 검증
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error("인증에 실패했습니다.");
+        error.statusCode = 403;
+        throw error;
+      }
       clearImage(post.imageUrl);
       return Post.findByIdAndDelete(postId);
     })
