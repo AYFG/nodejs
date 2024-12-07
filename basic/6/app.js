@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
+const cors = require("cors");
 
 require("dotenv").config();
 const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
@@ -36,7 +37,7 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"));
 app.use("/images", express.static(path.join(__dirname, "images")));
@@ -63,7 +64,7 @@ mongoose
   .connect(MongoDB_URI)
   .then((result) => {
     const server = app.listen(8080);
-    const io = require("socket.io")(server);
+    const io = require("./socket").init(server);
     io.on("connection", (socket) => {
       console.log("Client connected");
     });
