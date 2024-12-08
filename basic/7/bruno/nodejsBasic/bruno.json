@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "nodejsBasic",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
