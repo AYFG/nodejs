@@ -1,3 +1,4 @@
+require("dotenv").config();
 const path = require("path");
 
 const express = require("express");
@@ -6,12 +7,12 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
-const { createHandler } = require("graphql-http");
+const { createHandler } = require("graphql-http/lib/use/express");
+const { ruruHTML } = require("ruru/server");
 
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolvers");
 
-require("dotenv").config();
 const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
 
 const MongoDB_URI = `mongodb+srv://sek82468246:${DATABASE_PASSWORD}@cluster0.xupmv.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0`;
@@ -50,6 +51,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/graphiql", (_req, res) => {
+  res.type("html");
+  res.end(ruruHTML({ endpoint: "/graphql" }));
+});
 app.use(
   "/graphql",
   createHandler({
