@@ -1,5 +1,6 @@
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 
@@ -37,5 +38,29 @@ module.exports = {
       ...createdUser._doc,
       _id: createdUser._id.toString(),
     };
+  },
+
+  login: async function ({ email, password }) {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      const error = new Error("등록되지 않은 회원입니다.");
+      error.code = 401;
+      throw error;
+    }
+    const isEqual = await bcrypt.compare(password, user.password);
+    if (!isEqual) {
+      const error = new Error("비밀번호가 맞지 않습니다.");
+      error.code = 401;
+      throw error;
+    }
+    const token = jwt.sign(
+      {
+        userId: user._id.toString(),
+        email: user.email,
+      },
+      "아주비밀스러운비밀토큰",
+      { expiresIn: "1h" },
+    );
+    return { token: token, userId: user._id.toString() };
   },
 };
