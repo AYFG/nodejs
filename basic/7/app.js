@@ -12,6 +12,7 @@ const { ruruHTML } = require("ruru/server");
 
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolvers");
+const auth = require("./middleware/auth");
 
 const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
 
@@ -51,16 +52,18 @@ app.use((req, res, next) => {
 
   next();
 });
+app.use(auth);
 
-app.get("/graphiql", (_req, res) => {
-  res.type("html");
-  res.end(ruruHTML({ endpoint: "/graphql" }));
-});
 app.use(
   "/graphql",
   createHandler({
     schema: graphqlSchema,
     rootValue: graphqlResolver,
+    context: (req) => {
+      console.log(req.headers.authorization);
+      return req;
+    },
+
     formatError(err) {
       if (!err.originalError) {
         return err;
@@ -72,6 +75,11 @@ app.use(
     },
   }),
 );
+
+app.get("/graphiql", (_req, res) => {
+  res.type("html");
+  res.end(ruruHTML({ endpoint: "/graphql" }));
+});
 
 app.use((error, req, res, next) => {
   console.log(error);

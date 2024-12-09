@@ -57,17 +57,17 @@ class App extends Component {
 
   loginHandler = (event, authData) => {
     event.preventDefault();
-    this.setState({ authLoading: true });
     const graphqlQuery = {
       query: `
-      { 
-        login(email:"${authData.email}",password:"${authData.password}") {
-            token userId
-    }
-  }
-
+        {
+          login(email: "${authData.email}", password: "${authData.password}") {
+            token
+            userId
+          }
+        }
       `,
     };
+    this.setState({ authLoading: true });
     fetch("http://localhost:8080/graphql", {
       method: "POST",
       headers: {
@@ -83,7 +83,7 @@ class App extends Component {
           throw new Error("Validation failed. Make sure the email address isn't used yet!");
         }
         if (resData.errors) {
-          throw new Error("User login failed");
+          throw new Error("User login failed!");
         }
         console.log(resData);
         this.setState({
@@ -114,11 +114,12 @@ class App extends Component {
     this.setState({ authLoading: true });
     const graphqlQuery = {
       query: `
-        mutation{
-          createUser(userInput:{email:"${authData.signupForm.email.value}",name:"${authData.signupForm.name.value}",password:"${authData.signupForm.password.value}"}) {
-            _id email
-  }
-}
+        mutation {
+          createUser(userInput: {email: "${authData.signupForm.email.value}", name:"${authData.signupForm.name.value}", password:"${authData.signupForm.password.value}"}) {
+            _id
+            email
+          }
+        }
       `,
     };
     fetch("http://localhost:8080/graphql", {
@@ -136,7 +137,7 @@ class App extends Component {
           throw new Error("Validation failed. Make sure the email address isn't used yet!");
         }
         if (resData.errors) {
-          throw new Error("User creation failed");
+          throw new Error("User creation failed!");
         }
         console.log(resData);
         this.setState({ isAuth: false, authLoading: false });

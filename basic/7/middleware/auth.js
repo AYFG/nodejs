@@ -3,23 +3,33 @@ const jwt = require("jsonwebtoken");
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
-    const error = new Error("인증에 실패했습니다.");
-    error.statusCode = 401;
-    throw error;
+    req.isAuth = false;
+    return next();
   }
+
   const token = authHeader.split(" ")[1];
+  if (!token) {
+    req.isAuth = false;
+    return next();
+  }
+
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, "somesupersecretsecret");
   } catch (err) {
-    err.statusCode = 500;
-    throw err;
+    console.log("Token verification failed:", err.message);
+    req.isAuth = false;
+    return next();
   }
+
   if (!decodedToken) {
-    const error = new Error("인증에 실패했습니다.");
-    error.statusCode = 401;
-    throw error;
+    console.log("Decoded token is null");
+    req.isAuth = false;
+    return next();
   }
+  console.log(req.isAuth);
+
   req.userId = decodedToken.userId;
+  req.isAuth = true;
   next();
 };

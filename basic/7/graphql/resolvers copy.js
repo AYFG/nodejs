@@ -64,9 +64,9 @@ module.exports = {
     );
     return { token: token, userId: user._id.toString() };
   },
-  createPost: async function ({ postInput }, req) {
+  createPost: async function ({ postInput }, args, req) {
     console.log("test", req);
-    if (!req.raw.isAuth) {
+    if (!req.isAuth) {
       const error = new Error("인증되지 않음");
       error.code = 401;
       throw error;
@@ -88,7 +88,7 @@ module.exports = {
       error.code = 422;
       throw error;
     }
-    const user = await User.findById(req.raw.userId);
+    const user = await User.findById(req.userId);
     if (!user) {
       const error = new Error("인증되지 않은 유저입니다.");
       error.code = 401;
@@ -114,8 +114,8 @@ module.exports = {
     // console.log("Request Headers:", req);
     // console.log("Authenticated User ID:", req.userId);
     // console.log("Authentication Status:", req.isAuth);
-    console.log("포스츠 콘솔", req.raw);
-    if (!req.raw.isAuth) {
+    console.log("포스츠 콘솔", req.query);
+    if (!req.isAuth) {
       const error = new Error("인증되지 않았습니다.");
       error.code = 401;
       throw error;
