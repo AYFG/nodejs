@@ -60,6 +60,15 @@ app.use(
   createHandler({
     schema: graphqlSchema,
     rootValue: graphqlResolver,
+    formatError(err) {
+      if (!err.originalError) {
+        return err;
+      }
+      const data = err.originalError.data;
+      const message = err.message || "오류가 발생했습니다.";
+      const code = err.originalError.code || 500;
+      return { message: message, status: code, data: data };
+    },
   }),
 );
 
