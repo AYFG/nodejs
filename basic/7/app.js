@@ -1,6 +1,5 @@
 require("dotenv").config();
 const path = require("path");
-const fs = require("fs");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -10,6 +9,7 @@ const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
 const { createHandler } = require("graphql-http/lib/use/express");
 const { ruruHTML } = require("ruru/server");
+const { clearImage } = require("./util/file");
 
 const graphqlSchema = require("./graphql/schema");
 const graphqlResolver = require("./graphql/resolvers");
@@ -110,8 +110,3 @@ mongoose
     app.listen(8080);
   })
   .catch((err) => console.error(err));
-
-const clearImage = (filePath) => {
-  filePath = path.join(__dirname, "..", filePath);
-  fs.unlink(filePath, (err) => console.error(err));
-};

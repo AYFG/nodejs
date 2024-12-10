@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/user");
 const Post = require("../models/post");
+const { clearImage } = require("../util/file");
 
 module.exports = {
   createUser: async function ({ userInput }, req) {
@@ -211,5 +212,29 @@ module.exports = {
       createdAt: updatedPost.createdAt.toISOString(),
       updatedAt: updatedPost.updatedAt.toISOString(),
     };
+  },
+  deletePost: async function ({ id }, req) {
+    if (!req.raw.isAuth) {
+      const error = new Error("인증되지 않았습니다.");
+      error.code = 401;
+      throw error;
+    }
+    const post = await Post.findById(id);
+    if (!post) {
+      const error = new Error("게시물을 찾을 수 없습니다.");
+      error.code = 404;
+      throw error;
+    }
+    if (post.creator._id.toString() !== req.raw.userId.toString()) {
+      const error = new Error("인증되지 않은 사용자입니다.");
+      error.code = 403;
+      throw error;
+    }
+    clearImage(post.imageUrl);
+    await Post.findByIdAndDelete(id);
+    const user = await User.findById(req.raw.userId);
+    user.posts.pull(id);
+    await user.save();
+    return true;
   },
 };
