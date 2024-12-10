@@ -1,5 +1,6 @@
 require("dotenv").config();
 const path = require("path");
+const fs = require("fs");
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -25,7 +26,7 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, callback) => {
-    callback(null, Date.now() + file.originalname);
+    callback(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
   },
 });
 
@@ -46,13 +47,27 @@ app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   next();
 });
+
 app.use(auth);
+
+app.put("/post-image", (req, res, next) => {
+  if (!req.isAuth) {
+    throw new Error("인증되지 않은 사용자입니다.");
+  }
+  if (!req.file) {
+    return res.status(200).json({ message: "제공된 파일 없음" });
+  }
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+  return res.status(201).json({ message: "파일 저장 성공", filePath: req.file.path });
+});
 
 app.use(
   "/graphql",
@@ -95,3 +110,8 @@ mongoose
     app.listen(8080);
   })
   .catch((err) => console.error(err));
+
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => console.error(err));
+};

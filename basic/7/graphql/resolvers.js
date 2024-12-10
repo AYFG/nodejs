@@ -110,18 +110,23 @@ module.exports = {
       updatedAt: createdPost.updatedAt.toString(),
     };
   },
-  posts: async function (_, req) {
-    // console.log("Request Headers:", req);
-    // console.log("Authenticated User ID:", req.userId);
-    // console.log("Authentication Status:", req.isAuth);
-    console.log("포스츠 콘솔", req.raw);
+  posts: async function ({ page }, req) {
     if (!req.raw.isAuth) {
       const error = new Error("인증되지 않았습니다.");
       error.code = 401;
       throw error;
     }
+    if (!page) {
+      page = 1;
+    }
+    const perPage = 2;
+
     const totalPosts = await Post.find().countDocuments();
-    const posts = await Post.find().sort({ createdAt: -1 }).populate("creator");
+    const posts = await Post.find()
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .populate("creator");
     return {
       posts: posts.map((p) => {
         return {
@@ -132,6 +137,26 @@ module.exports = {
         };
       }),
       totalPosts: totalPosts,
+    };
+  },
+  post: async function ({ id }, req) {
+    if (!req.raw.isAuth) {
+      const error = new Error("인증되지 않았습니다.");
+      error.code = 401;
+      throw error;
+    }
+    const post = await Post.findById(id).populate("creator");
+    if (!post) {
+      const error = new Error("게시물을 찾을 수 없습니다.");
+      error.code = 404;
+      throw error;
+    }
+    console.log(post);
+    return {
+      ...post._doc,
+      _id: post._id.toString(),
+      createdAt: post.createdAt.toISOString(),
+      updatedAt: post.updatedAt.toISOString(),
     };
   },
 };

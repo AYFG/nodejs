@@ -17,13 +17,11 @@ module.exports = (req, res, next) => {
   try {
     decodedToken = jwt.verify(token, "somesupersecretsecret");
   } catch (err) {
-    console.log("Token verification failed:", err.message);
     req.isAuth = false;
     return next();
   }
 
   if (!decodedToken) {
-    console.log("Decoded token is null");
     req.isAuth = false;
     return next();
   }
