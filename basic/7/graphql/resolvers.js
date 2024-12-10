@@ -159,4 +159,57 @@ module.exports = {
       updatedAt: post.updatedAt.toISOString(),
     };
   },
+  updatePost: async function ({ id, postInput }, req) {
+    if (!req.raw.isAuth) {
+      const error = new Error("인증되지 않았습니다.");
+      error.code = 401;
+      throw error;
+    }
+    const post = await Post.findById(id).populate("creator");
+    if (!post) {
+      const error = new Error("게시물을 찾을 수 없습니다.");
+      error.code = 404;
+      throw error;
+    }
+    if (post.creator._id.toString() !== req.raw.userId.toString()) {
+      const error = new Error("인증되지 않은 사용자입니다.");
+      error.code = 403;
+      throw error;
+    }
+    const errors = [];
+
+    if (validator.isEmpty(postInput.title) || !validator.isLength(postInput.title, { min: 5 })) {
+      errors.push({ message: "제목이 잘못되었습니다" });
+    }
+    if (
+      validator.isEmpty(postInput.content) ||
+      !validator.isLength(postInput.content, { min: 5 })
+    ) {
+      errors.push({ message: "내용이 잘못되었습니다" });
+    }
+    if (errors.length > 0) {
+      const error = new Error("잘못된 입력이 있습니다.");
+      error.data = errors;
+      error.code = 422;
+      throw error;
+    }
+    const user = await User.findById(req.raw.userId);
+    if (!user) {
+      const error = new Error("인증되지 않은 유저입니다.");
+      error.code = 401;
+      throw error;
+    }
+    post.title = postInput.title;
+    post.content = postInput.content;
+    if (postInput.imageUrl !== "undefined") {
+      post.imageUrl = postInput.imageUrl;
+    }
+    const updatedPost = await post.save();
+    return {
+      ...updatedPost._doc,
+      _id: updatedPost._id.toString(),
+      createdAt: updatedPost.createdAt.toISOString(),
+      updatedAt: updatedPost.updatedAt.toISOString(),
+    };
+  },
 };
