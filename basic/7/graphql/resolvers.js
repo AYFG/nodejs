@@ -237,4 +237,36 @@ module.exports = {
     await user.save();
     return true;
   },
+  user: async function (_, req) {
+    if (!req.raw.isAuth) {
+      const error = new Error("인증되지 않았습니다.");
+      error.code = 401;
+      throw error;
+    }
+    const user = await User.findById(req.raw.userId);
+    if (!user) {
+      if (!post) {
+        const error = new Error("게시물을 찾을 수 없습니다.");
+        error.code = 404;
+        throw error;
+      }
+      return { ...user._doc, _id: user._id.toString() };
+    }
+  },
+  updateStatus: async function ({ status }, req) {
+    if (!req.raw.isAuth) {
+      const error = new Error("인증되지 않았습니다.");
+      error.code = 401;
+      throw error;
+    }
+    const user = await User.findById(req.raw.userId);
+    if (!user) {
+      const error = new Error("인증되지 않은 유저입니다.");
+      error.code = 404;
+      throw error;
+    }
+    user.status = status;
+    await user.save();
+    return { ...user._doc, _id: user._id.toString() };
+  },
 };
