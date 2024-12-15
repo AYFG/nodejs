@@ -245,13 +245,11 @@ module.exports = {
     }
     const user = await User.findById(req.raw.userId);
     if (!user) {
-      if (!post) {
-        const error = new Error("게시물을 찾을 수 없습니다.");
-        error.code = 404;
-        throw error;
-      }
-      return { ...user._doc, _id: user._id.toString() };
+      const error = new Error("게시물을 찾을 수 없습니다.");
+      error.code = 404;
+      throw error;
     }
+    return { ...user._doc, _id: user._id.toString() };
   },
   updateStatus: async function ({ status }, req) {
     if (!req.raw.isAuth) {
