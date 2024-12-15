@@ -3,6 +3,8 @@ const path = require("path");
 
 const PDFDocument = require("pdfkit");
 
+require("dotenv").config();
+
 const Product = require("../models/product");
 const Order = require("../models/order");
 

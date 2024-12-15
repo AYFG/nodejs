@@ -8,15 +8,20 @@ const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const helmet = require("helmet");
 
 require("dotenv").config();
-const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
 
 const errorController = require("./controllers/error");
 
 const User = require("./models/user");
 
-const MongoDB_URI = `mongodb+srv://sek82468246:${DATABASE_PASSWORD}@cluster0.xupmv.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0`;
+const DATABASE_ID = process.env.DATABASE_ID;
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
+const DATABASE_NAME = process.env.DATABASE_NAME;
+const PORT = process.env.PORT;
+
+const MongoDB_URI = `mongodb+srv://${DATABASE_ID}:${DATABASE_PASSWORD}@cluster0.xupmv.mongodb.net/${DATABASE_NAME}?retryWrites=true&w=majority&appName=Cluster0`;
 
 const app = express();
 const store = new MongoDBStore({
@@ -52,6 +57,8 @@ app.set("views", "views");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
+
+// app.use(helmet());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"));
@@ -104,7 +111,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MongoDB_URI)
   .then((result) => {
-    app.listen(3000);
+    app.listen(PORT || 3000);
   })
   .catch((err) => {
     console.error(err);
