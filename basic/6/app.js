@@ -8,9 +8,12 @@ const { v4: uuidv4 } = require("uuid");
 const cors = require("cors");
 
 require("dotenv").config();
+const DATABASE_ID = process.env.DATABASE_ID;
 const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD;
+const DATABASE_NAME = process.env.DATABASE_NAME;
+const PORT = process.env.PORT;
 
-const MongoDB_URI = `mongodb+srv://sek82468246:${DATABASE_PASSWORD}@cluster0.xupmv.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0`;
+const MongoDB_URI = `mongodb+srv://${DATABASE_ID}:${DATABASE_PASSWORD}@cluster0.xupmv.mongodb.net/${DATABASE_NAME}?retryWrites=true&w=majority&appName=Cluster0`;
 
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
@@ -63,7 +66,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MongoDB_URI)
   .then((result) => {
-    const server = app.listen(8080);
+    const server = app.listen(PORT || 4000);
     const io = require("./socket").init(server);
     io.on("connection", (socket) => {
       console.log("Client connected");
