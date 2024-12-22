@@ -36,13 +36,12 @@ exports.signup = (req, res, next) => {
       next(err);
     });
 };
-
 exports.login = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   let loadedUser;
 
-  User.findOne({ email: email })
+  return User.findOne({ email: email })
     .then((user) => {
       if (!user) {
         const error = new Error("해당 이메일을 가진 사용자를 찾지 못했습니다.");
@@ -67,11 +66,13 @@ exports.login = (req, res, next) => {
         { expiresIn: "1h" },
       );
       res.status(200).json({ token: token, userId: loadedUser._id.toString() });
+      return;
     })
     .catch((err) => {
       if (!err.statusCode) {
         err.statusCode = 500;
       }
       next(err);
+      return err;
     });
 };
